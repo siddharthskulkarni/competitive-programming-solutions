@@ -1,65 +1,34 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-int neural_net(int count, long w[], long b[],int x, int N) {
-	if(count == N) 
-		return x;
-	if(x % 2 == 0) {
-		if(b[count] % 2 == 0) {
-			count ++;
-			neural_net(count, w, b, 0, N);
-		}
-		else {
-			count ++;
-			neural_net(count, w, b, 1, N);
-		}
-	}
-	else {
-		if(w[count] % 2 == 0) {
-			if(b[count] % 2 == 0) {
-				count ++;
-				neural_net(count, w, b, 0, N);
-			}
-			else {
-				count ++;
-				neural_net(count, w, b, 1, N);
-			}
-		}
-		else {
-			if(b[count] % 2 == 0) {
-				count ++;
-				neural_net(count, w, b, 1, N);
-			} 
-			else {
-				count ++;
-			neural_net(count, w, b, 0, N);
-			}
-		}
-	}
-}
-
 int main() {
-	int T;
-	cin >> T;
-	for(int i = 0; i < T; i++) {
-		long w[100000], b[100000], minx, maxx, cnt_spam = 0;
-		int N;
-		cin >> N >> minx >> maxx;
-		for (int j = 0; j < N; j++) 
-			cin >> w[i] >> b[i];
-		int even, odd;
-		even = neural_net(0, w, b, 0, N);
-		odd = neural_net(0, w, b, 1, N);
-		cout << odd << " " << even;
-		/*for(int x = minx; x <= maxx; x++) {
-			if(x % 2 != 0)
-				if(odd % 2 != 0)
-					cnt_spam ++;
-			else
-				if(even % 2 != 0)
-					cnt_spam ++;
-		}
-		cout << maxx - cnt_spam << " " << cnt_spam << "\n";*/
-	}
-	return 0;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t;
+    cin >> t;
+    while(t--) {
+        int n, effective_w = 1, effective_b = 0;
+        long minx, maxx;
+        cin >> n >> minx >> maxx;
+        for(int i = 0; i < n ; i++) {
+            long w, b;
+            cin >> w >> b;
+            w %= 2;
+            b %= 2;
+            effective_w *= w;
+            effective_b = effective_b * w + b; 
+        }    
+        long tot = maxx - minx + 1, even = tot / 2, odd = tot / 2, not_spam = 0, spam = 0;
+        if((maxx % 2 == 0) && (minx % 2 == 0))
+            even++;
+        if((maxx % 2 != 0) && (minx % 2 != 0))
+            odd++;
+        if(effective_b % 2 == 1)
+            spam += even;
+        if((effective_w + effective_b) % 2 == 1)
+            spam += odd;
+        not_spam = tot - spam;
+        cout << not_spam << " " << spam << "\n";
+    }
+    return 0;
 }
